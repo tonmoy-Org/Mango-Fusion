@@ -1,4 +1,4 @@
-"use client"; // Ensures this component is rendered on the client-side
+'use client'; // Ensures this component is rendered on the client-side
 
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
@@ -8,12 +8,18 @@ import Box from '@mui/material/Box';
 import { useForm } from 'react-hook-form';
 import { Container, Grid } from '@mui/material';
 
+interface FormValues {
+    name: string;
+    email: string;
+    message: string;
+}
+
 const ContactPage = () => {
     // Initialize React Hook Form
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
 
     // Function to handle form submission
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: FormValues) => {
         console.log(data); // Handle form data here
         // You can send the data to an API or handle it as needed
     };
@@ -36,7 +42,7 @@ const ContactPage = () => {
                             margin="normal"
                             {...register('name', { required: 'নাম প্রয়োজন' })}
                             error={!!errors.name}
-                            helperText={errors.name?.message}
+                            helperText={errors.name ? errors.name.message : ''}
                             sx={{
                                 mb: 2,
                                 '& .MuiOutlinedInput-root': {
@@ -68,7 +74,7 @@ const ContactPage = () => {
                             margin="normal"
                             {...register('email', { required: 'ইমেইল প্রয়োজন' })}
                             error={!!errors.email}
-                            helperText={errors.email?.message}
+                            helperText={errors.email ? errors.email.message : ''}
                             sx={{
                                 mb: 2,
                                 '& .MuiOutlinedInput-root': {
@@ -102,7 +108,7 @@ const ContactPage = () => {
                             rows={4}
                             {...register('message', { required: 'বার্তা প্রয়োজন' })}
                             error={!!errors.message}
-                            helperText={errors.message?.message}
+                            helperText={errors.message ? errors.message.message : ''}
                             sx={{
                                 mb: 2,
                                 '& .MuiOutlinedInput-root': {
