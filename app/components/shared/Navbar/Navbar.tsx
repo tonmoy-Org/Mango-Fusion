@@ -36,7 +36,7 @@ const links = [
 export default function DrawerAppBar(props: Props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const pathname = usePathname(); // Get the current pathname
+    const pathname = usePathname();
 
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
@@ -48,15 +48,9 @@ export default function DrawerAppBar(props: Props) {
                 <Image
                     src={logo}
                     alt="MangoFusion Logo"
-                    style={{ height: 40, width: 40 }}
+                    style={{ height: 80, width: 200 }}
+                    priority
                 />
-                <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontWeight: 'bold' }}
-                >
-                    MangoFusion
-                </Typography>
             </Box>
             <Divider />
             <List>
@@ -66,11 +60,14 @@ export default function DrawerAppBar(props: Props) {
                             component={Link}
                             href={link.href}
                             sx={{
-                                color: pathname === link.href ? 'darkgreen' : 'black',
-                                fontWeight: pathname === link.href ? 'bold' : '',
+                                color: pathname === link.href ? 'primary.main' : 'text.primary',
+                                fontWeight: pathname === link.href ? 'bold' : 'normal',
+                                '&:hover': {
+                                    backgroundColor: 'action.hover',
+                                }
                             }}
                         >
-                            <ListItemText primary={link.text} />
+                            <ListItemText primary={link.text} primaryTypographyProps={{ variant: 'body1' }} />
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -83,55 +80,100 @@ export default function DrawerAppBar(props: Props) {
     return (
         <Box sx={{ display: 'flex', mb: { md: 8 } }}>
             <CssBaseline />
-            <AppBar component="nav" sx={{ bgcolor: 'white', color: 'black' }}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        sx={{ display: { sm: 'none' } }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                        <Image
-                            src={logo}
-                            alt="MangoFusion Logo"
-                            style={{ height: 40, width: 40 }}
-                        />
-                        <Typography
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, fontWeight: 'bold' }}
-                        >
-                            MangoFusion
-                        </Typography>
+            <AppBar
+                position="fixed"
+                sx={{
+                    backgroundColor: 'background.paper',
+                    color: 'text.primary',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    px: { xs: 2, md: 13 }
+                }}
+                component="nav"
+            >
+                <Toolbar sx={{ justifyContent: 'space-between' }}>
+                    {/* Logo on the left */}
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        flexGrow: { xs: 1, sm: 0 }
+                    }}>
+                        <Link href="/" passHref>
+                            <Image
+                                src={logo}
+                                alt="MangoFusion Logo"
+                                style={{ height: 60, width: 150 }}
+                                priority
+                            />
+                        </Link>
                     </Box>
-                    <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                        <List sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+
+                    {/* Desktop navigation */}
+                    <Box sx={{
+                        display: { xs: 'none', sm: 'block' },
+                        flexGrow: 1,
+                        ml: 4
+                    }}>
+                        <List sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                             {links.map((link) => (
-                                <ListItem key={link.href} disablePadding>
+                                <ListItem key={link.href} disablePadding sx={{ width: 'auto' }}>
                                     <ListItemButton
                                         component={Link}
                                         href={link.href}
                                         sx={{
-                                            bgcolor: 'transparent',
-                                            borderBottom: pathname === link.href ? '3px solid darkgreen' : '3px solid transparent',
+                                            px: 3,
+                                            color: pathname === link.href ? 'primary.main' : 'text.primary',
+                                            fontWeight: pathname === link.href ? 'bold' : 'normal',
                                             '&:hover': {
-                                                borderBottom: '3px solid black',
-                                                bgcolor: 'transparent'
+                                                backgroundColor: 'transparent',
+                                                color: 'primary.dark'
                                             },
+                                            position: 'relative',
+                                            '&::after': {
+                                                content: '""',
+                                                position: 'absolute',
+                                                bottom: 0,
+                                                left: '50%',
+                                                transform: pathname === link.href ? 'translateX(-50%) scaleX(1)' : 'translateX(-50%) scaleX(0)',
+                                                width: '60%',
+                                                height: 2,
+                                                backgroundColor: 'primary.main',
+                                                transition: 'transform 0.3s ease',
+                                            },
+                                            '&:hover::after': {
+                                                transform: 'translateX(-50%) scaleX(1)',
+                                            }
                                         }}
                                     >
-                                        <ListItemText primary={link.text} />
+                                        <ListItemText
+                                            primary={link.text}
+                                            primaryTypographyProps={{
+                                                variant: 'body1',
+                                                fontWeight: 'inherit'
+                                            }}
+                                        />
                                     </ListItemButton>
                                 </ListItem>
                             ))}
                         </List>
                     </Box>
+
+                    {/* Mobile menu button on the right */}
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        edge="end"
+                        onClick={handleDrawerToggle}
+                        sx={{
+                            display: { sm: 'none' },
+                            color: 'text.primary'
+                        }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
+
+            {/* Mobile drawer */}
             <nav>
                 <Drawer
                     container={container}
@@ -139,11 +181,14 @@ export default function DrawerAppBar(props: Props) {
                     open={mobileOpen}
                     onClose={handleDrawerToggle}
                     ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
+                        keepMounted: true,
                     }}
                     sx={{
                         display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        '& .MuiDrawer-paper': {
+                            boxSizing: 'border-box',
+                            width: drawerWidth,
+                        },
                     }}
                 >
                     {drawer}
