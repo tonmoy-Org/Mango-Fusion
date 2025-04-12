@@ -24,6 +24,7 @@ interface Props {
 }
 
 const drawerWidth = 240;
+const activeColor = '#008e48'; // Your specific green color
 
 const links = [
     { text: 'Home', href: '/' },
@@ -60,7 +61,7 @@ export default function DrawerAppBar(props: Props) {
                             component={Link}
                             href={link.href}
                             sx={{
-                                color: pathname === link.href ? 'primary.main' : 'text.primary',
+                                color: pathname === link.href ? activeColor : 'text.primary',
                                 fontWeight: pathname === link.href ? 'bold' : 'normal',
                                 '&:hover': {
                                     backgroundColor: 'action.hover',
@@ -83,9 +84,10 @@ export default function DrawerAppBar(props: Props) {
             <AppBar
                 position="fixed"
                 sx={{
-                    backgroundColor: 'background.paper',
-                    color: 'text.primary',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: 'none',
+                    color: '#008e48',
                     px: { xs: 2, md: 13 }
                 }}
                 component="nav"
@@ -121,11 +123,11 @@ export default function DrawerAppBar(props: Props) {
                                         href={link.href}
                                         sx={{
                                             px: 3,
-                                            color: pathname === link.href ? 'primary.main' : 'text.primary',
+                                            color: pathname === link.href ? activeColor : 'text.primary',
                                             fontWeight: pathname === link.href ? 'bold' : 'normal',
                                             '&:hover': {
                                                 backgroundColor: 'transparent',
-                                                color: 'primary.dark'
+                                                color: activeColor
                                             },
                                             position: 'relative',
                                             '&::after': {
@@ -136,7 +138,7 @@ export default function DrawerAppBar(props: Props) {
                                                 transform: pathname === link.href ? 'translateX(-50%) scaleX(1)' : 'translateX(-50%) scaleX(0)',
                                                 width: '60%',
                                                 height: 2,
-                                                backgroundColor: 'primary.main',
+                                                backgroundColor: activeColor,
                                                 transition: 'transform 0.3s ease',
                                             },
                                             '&:hover::after': {
